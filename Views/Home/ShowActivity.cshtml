@@ -1,0 +1,33 @@
+@model Gathering
+
+<div class="d-flex justify-content-around">
+    <h1>@Model.Title</h1>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/logout">Logout</a>
+</div>
+<h3>Event Coordinator: @Model.Creator.Name</h3>
+<h3>Description:</h3>
+<p>@Model.Description</p>
+@if(Model.Creator.UserId == ViewBag.User.UserId)
+{
+    <a href="/destroy/@Model.GatheringId" class="btn btn-danger btn-outline-dark">Cancel Activity</a>
+}
+else
+{
+    if(Model.Participants.Any(p => p.UserId == ViewBag.User.UserId))
+    {
+        <a href="/leave/@Model.GatheringId/@ViewBag.User.UserId" class="btn btn-info btn-outline-dark">Leave</a>
+    }
+    else
+    {
+        <a href="/join/@Model.GatheringId/@ViewBag.User.UserId" class="btn btn-info btn-outline-dark">Join</a>
+    }
+}
+
+<h2>Guests:</h2>
+<ul class="list-group">
+    @foreach(Participation p in Model.Participants)
+    {
+        <li class="list-group-item">@p.Participant.Name</li>
+    }
+</ul>

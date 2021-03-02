@@ -1,0 +1,50 @@
+@model List<Gathering>
+
+<h1 class="text-success text-center">Welcome, @ViewBag.User.Name</h1>
+<a href="/logout" class="btn btn-dark">Logout</a>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Activity</th>
+            <th>Date and Time</th>
+            <th>Duration</th>
+            <th>Event Coordinator</th>
+            <th>Number of Participants</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(Gathering g in Model)
+        {
+            <tr>
+                <td>
+                    <a href="/activity/@g.GatheringId">@g.Title</a>
+                </td>
+                <td>@g.Start.ToLongDateString() @g.Start.ToLongTimeString()</td>
+                <td>@g.DurationInt @g.DurationString</td>
+                <td>@g.Creator.Name</td>
+                <td>@g.Participants.Count</td>
+                <td>
+                    @if(g.Creator.UserId == ViewBag.User.UserId)
+                    {
+                        <a href="/destroy/@g.GatheringId" class="btn btn-danger btn-outline-dark">Cancel Activity</a>
+                    }
+                    else
+                    {
+                        if(g.Participants.Any(p => p.UserId == ViewBag.User.UserId))
+                        {
+                            <a href="/leave/@g.GatheringId/@ViewBag.User.UserId" class="btn btn-info btn-outline-dark">Leave</a>
+                        }
+                        else
+                        {
+                            <a href="/join/@g.GatheringId/@ViewBag.User.UserId" class="btn btn-info btn-outline-dark">Join</a>
+                        }
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="/new" class="btn btn-primary btn-outline-dark">New Activity</a>
